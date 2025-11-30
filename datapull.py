@@ -10,7 +10,7 @@ tickers = ['QQQ', 'SPY', 'GLD', 'AAPL', 'MSFT', 'GOOGL', 'AMZN', 'TSLA', 'META',
 end_date = datetime.today()
 
 #Set the start date
-start_date = end_date - timedelta(days=1*365)
+start_date = end_date - timedelta(days=5*365)
 
 df = yf.download(tickers=tickers, start=start_date, end=end_date)
 df.to_csv("data/all_prices.csv")
@@ -18,7 +18,7 @@ df.to_csv("data/all_prices.csv")
 
 #Calculate the change in price per day
 price_dif = (df["Close"] - df["Open"]) / df["Open"]
-print(price_dif * 100)
+price_dif = (price_dif * 100).round(5)
 price_dif.to_csv("data/price_dif_pct.csv")
 
 #Plot the data and show visualization
