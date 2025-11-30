@@ -14,4 +14,9 @@ start_date = end_date - timedelta(days=1*365)
 
 df = yf.download(tickers=tickers, start=start_date, end=end_date)
 df.to_csv("data/all_prices.csv")
-print(df)
+#print(df.columns)
+
+#Calculate the change in price per day
+price_dif = (df["Close"] - df["Open"]) / df["Open"]
+print(price_dif * 100)
+price_dif.to_csv("data/price_dif_pct.csv")
