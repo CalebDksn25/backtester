@@ -20,3 +20,8 @@ df.to_csv("data/all_prices.csv")
 price_dif = (df["Close"] - df["Open"]) / df["Open"]
 print(price_dif * 100)
 price_dif.to_csv("data/price_dif_pct.csv")
+
+#Plot the data and show visualization
+price_dif.plot()
+df["Open"].plot()
+plt.show()
