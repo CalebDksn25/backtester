@@ -23,5 +23,10 @@ buy_cost = 1000
 
 equity = buy_cost * (1 + qqq_ret).cumprod()
 
+print("Start: ", equity.index[0], "Value: ", equity.iloc[0])
+print("End: ", equity.index[-1], "Value: ", equity.iloc[-1])
+total_return = equity.iloc[-1] / equity.iloc[0] - 1
+print("Total return: ", total_return)
+
 equity.plot(title="QQQ Buy and Sell Equity Curve")
 plt.show()
