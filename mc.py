@@ -67,3 +67,45 @@ plt.xlabel("Final Price")
 plt.ylabel("Frequency")
 plt.title("Distribution of final prices after 252 days".format(time))
 plt.show()
+
+def strat_buy_and_hold(prices, initial_capital=1.0):
+    #Invest all capital at t=0 and hold till the end
+    return initial_capital * (prices[-1] / prices[0])
+
+def strategy_drop_5pct_hold_2m(prices, drop_threshold=-0.05, hold_days=42, initial_capital=1.0):
+    prices = pd.Series(prices).reset_index(drop=True)
+    returns = prices.pct_change()
+
+    equity = initial_capital
+    i = 1  # start at 1 because returns[0] is NaN
+
+    while i < len(prices) - 1:
+        # Check for drop on day i (compared to previous close)
+        if returns.iloc[i] <= drop_threshold:
+            entry_idx = i + 1
+            if entry_idx >= len(prices):
+                break
+
+            entry_price = prices.iloc[entry_idx]
+
+            exit_idx = min(entry_idx + hold_days, len(prices) - 1)
+            exit_price = prices.iloc[exit_idx]
+
+            trade_ret = exit_price / entry_price - 1
+            equity *= (1 + trade_ret)
+
+            # Skip ahead so trades don't overlap
+            i = exit_idx + 1
+        else:
+            i += 1
+
+    return equity
+
+#Simulate MC function
+def sim_paths(S0, mu, sigma, time=252, n_sims=10000):
+    dt = 1
+    rand_norm = np.random.normal(0, 1, (time, n_sims))
+    sim_log_rets = (mu - 0.5 * sigma**2) * dt + sigma * np.sqrt(dt) * rand_norm
+    log_price_relatives = sim_log_rets.cumsum(axis=0)
+    price_paths = S0 * np.exp(log_price_relatives)
+    return price_paths
